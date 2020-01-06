@@ -316,6 +316,44 @@ export const asyncRouterMap = [
             ]
           }
         ]
+      },
+      {
+        path: '/permission',
+        redirect: '/permission/account',
+        component: PageView,
+        meta: { title: '权限设置', icon: 'form', permission: [ 'permission' ] },
+        children: [
+          {
+            path: '/permission/account',
+            name: 'accountSetting',
+            component: () => import('@/views/permission/account/list'),
+            meta: { title: '账号管理', keepAlive: true, permission: [ 'permission' ] }
+          },
+          {
+            path: '/permission/org',
+            name: 'orgSetting',
+            component: () => import('@/views/permission/org/setting'),
+            meta: { title: '组织管理', keepAlive: true, permission: [ 'permission' ] }
+          },
+          {
+            path: '/permission/role',
+            name: 'roleSetting',
+            component: () => import('@/views/permission/role/list'),
+            meta: { title: '角色管理', keepAlive: true, permission: [ 'permission' ] }
+          },
+          {
+            path: '/permission/tenant',
+            name: 'tenantSetting',
+            component: () => import('@/views/permission/tenant/setting'),
+            meta: { title: '租户管理', keepAlive: true, permission: [ 'permission' ] }
+          },
+          {
+            path: '/permission/menu',
+            name: 'menuSetting',
+            component: () => import('@/views/permission/menu/setting'),
+            meta: { title: '菜单设置', keepAlive: true, permission: [ 'permission' ] }
+          }
+        ]
       }
     ]
   },

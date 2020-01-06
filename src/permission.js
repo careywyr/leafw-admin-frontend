@@ -17,7 +17,7 @@ router.beforeEach((to, from, next) => {
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
   if (Vue.ls.get(ACCESS_TOKEN)) {
     /* has token */
-    if (to.path === '/user/login') {
+    if (to.path === '/login/email') {
       next({ path: '/dashboard/workplace' })
       NProgress.done()
     } else {
@@ -25,8 +25,9 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
-            store.dispatch('GenerateRoutes', { roles }).then(() => {
+            const roles = res.data.roleIds
+            const permissions = res.data.permissions
+            store.dispatch('GenerateRoutes', { permissions }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
