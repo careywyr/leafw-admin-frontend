@@ -2,50 +2,16 @@
   <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="48">
+        <a-row  style="display: flex">
           <a-col :md="8" :sm="24">
-            <a-form-item label="用户名">
+            <a-form-item label="角色名称">
               <a-input v-model="queryParam.id" placeholder=""/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-item label="部门">
-              <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
-                <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">关闭</a-select-option>
-                <a-select-option value="2">运行中</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <template v-if="advanced">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="邮箱">
-                <a-input-number v-model="queryParam.callNo" style="width: 100%"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="更新日期">
-                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="角色">
-                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </template>
-          <a-col :md="!advanced && 8 || 24" :sm="24">
-            <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+          <a-col  :sm="24" :md="3">
+            <span class="table-page-search-submitButtons" :style=" { float: 'right', overflow: 'hidden' }  ">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a @click="toggleAdvanced" style="margin-left: 8px">
-                {{ advanced ? '收起' : '展开' }}
-                <a-icon :type="advanced ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
         </a-row>
@@ -54,17 +20,6 @@
 
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
-      <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
-      <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
-          <!-- lock | unlock -->
-          <a-menu-item key="2"><a-icon type="lock" />锁定</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px">
-          批量操作 <a-icon type="down" />
-        </a-button>
-      </a-dropdown>
     </div>
 
     <s-table
@@ -72,10 +27,7 @@
       size="default"
       rowKey="key"
       :columns="columns"
-      :data="loadData"
-      :alert="options.alert"
-      :rowSelection="options.rowSelection"
-    >
+      :data="loadData">
       <span slot="serial" slot-scope="text, record, index">
         {{ index + 1 }}
       </span>
@@ -92,14 +44,12 @@
       </span>
     </s-table>
     <create-form ref="createModal" @ok="handleOk" />
-    <step-by-step-modal ref="modal" @ok="handleOk"/>
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import StepByStepModal from '../../list/modules/StepByStepModal'
 import CreateForm from '../../list/modules/CreateForm'
 import { getRoleList, getServiceList } from '@/api/manage'
 
@@ -126,14 +76,13 @@ export default {
   name: 'TableList',
   components: {
     STable,
-    CreateForm,
-    StepByStepModal
+    CreateForm
   },
   data () {
     return {
       mdl: {},
       // 高级搜索 展开/关闭
-      advanced: false,
+      // advanced: false,
       // 查询参数
       queryParam: {},
       // 表头
@@ -143,18 +92,18 @@ export default {
           scopedSlots: { customRender: 'serial' }
         },
         {
-          title: '用户名',
+          title: '角色名称',
           dataIndex: 'no'
         },
         {
-          title: '真实姓名',
+          title: '功能权限',
           dataIndex: 'description'
         },
         {
-          title: '所属组织',
+          title: '角色描述',
           dataIndex: 'callNo',
           sorter: true,
-          needTotal: true,
+          // needTotal: true,
           customRender: (text) => text + ' 次'
         },
         {
@@ -246,9 +195,9 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
+    // toggleAdvanced () {
+    //   this.advanced = !this.advanced
+    // },
     resetSearchForm () {
       this.queryParam = {
         date: moment(new Date())
