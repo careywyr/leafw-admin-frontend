@@ -332,7 +332,7 @@ export const asyncRouterMap = [
           {
             path: '/permission/org',
             name: 'orgSetting',
-            component: () => import('@/views/permission/org/setting'),
+            component: () => import('@/views/permission/org/list'),
             meta: { title: '组织管理', keepAlive: true, permission: [ 'permission' ] }
           },
           {
