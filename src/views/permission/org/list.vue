@@ -4,7 +4,7 @@
       <a-form layout="inline">
         <a-row  style="display: flex">
           <a-col :md="8" :sm="24">
-            <a-form-item label="组织名称">
+            <a-form-item label="部门名称">
               <a-input v-model="queryParam.orgName" placeholder=""/>
             </a-form-item>
           </a-col>
@@ -36,7 +36,7 @@
         <template>
           <a @click="handleEdit(record)">修改</a>
           <a-divider type="vertical" />
-          <a-popconfirm title="是否要删除此组织？" @confirm="remove(record.orgId)">
+          <a-popconfirm title="是否要删除此部门？" @confirm="remove(record.orgId)">
                 <a>删除</a>
            </a-popconfirm>
         </template>
@@ -92,7 +92,7 @@ export default {
           scopedSlots: { customRender: 'serial' }
         },
         {
-          title: '组织名称',
+          title: '部门名称',
           dataIndex: 'orgName'
         },
         {
@@ -136,14 +136,11 @@ export default {
     },
     statusTypeFilter (type) {
       return statusMap[type].status
-    },
-    timeFormatFilter(time){
-      return moment(time).format("yyyy-MM-dd")
     }
   },
   created () {
     this.tableOption()
-    getRoleList({ t: new Date() })
+    // getRoleList({ t: new Date() })
   },
   methods: {
     tableOption () {

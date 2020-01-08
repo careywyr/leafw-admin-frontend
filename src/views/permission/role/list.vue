@@ -5,10 +5,28 @@
         <a-row  style="display: flex">
           <a-col :md="8" :sm="24">
             <a-form-item label="角色名称">
-              <a-input v-model="queryParam.id" placeholder=""/>
+              <a-input v-model="queryParam.roleName" placeholder=""/>
             </a-form-item>
           </a-col>
-          <a-col  :sm="24" :md="3">
+          <a-col :md="8" :sm="24" style="padding-left: 24px; padding-right: 24px;">
+            <a-form-item label="所属部门" >
+              <a-select
+                showSearch
+                allowClear
+                :value="queryParam.orgId"
+                placeholder="请选择所属部门"
+                style="width: 200px"
+                :defaultActiveFirstOption="false"
+                :showArrow="false"
+                :filterOption="false"
+                @search="handleSearch"
+                @change="handleChange"
+                :notFoundContent="null">
+                <a-select-option v-for="d in orgList" :key="d.orgId">{{d.orgName}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col  :sm="16" :md="1">
             <span class="table-page-search-submitButtons" :style=" { float: 'right', overflow: 'hidden' }  ">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
@@ -31,10 +49,6 @@
       <span slot="serial" slot-scope="text, record, index">
         {{ index + 1 }}
       </span>
-      <span slot="status" slot-scope="text">
-        <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-      </span>
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">修改</a>
@@ -51,24 +65,17 @@
 import moment from 'moment'
 import { STable } from '@/components'
 import CreateForm from '../../list/modules/CreateForm'
-import { getRoleList, getServiceList } from '@/api/manage'
+import { queryRoleList, deleteRole, saveRole, updateRole } from '@/api/role'
+import { getOrgAll } from '@/api/org'
 
 const statusMap = {
   0: {
-    status: 'default',
+    roleStatus: '0',
     text: '关闭'
   },
   1: {
-    status: 'processing',
+    roleStatus: '1',
     text: '运行中'
-  },
-  2: {
-    status: 'success',
-    text: '已上线'
-  },
-  3: {
-    status: 'error',
-    text: '异常'
   }
 }
 
@@ -84,37 +91,27 @@ export default {
       // 高级搜索 展开/关闭
       // advanced: false,
       // 查询参数
-      queryParam: {},
+      queryParam: { 'orgId': null },
+      orgList: [],
       // 表头
       columns: [
         {
-          title: '#',
+          title: '序号',
           scopedSlots: { customRender: 'serial' }
         },
         {
           title: '角色名称',
-          dataIndex: 'no'
+          dataIndex: 'roleName'
         },
         {
-          title: '功能权限',
-          dataIndex: 'description'
-        },
-        {
-          title: '角色描述',
-          dataIndex: 'callNo',
-          sorter: true,
-          // needTotal: true,
-          customRender: (text) => text + ' 次'
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          scopedSlots: { customRender: 'status' }
+          title: '所属部门',
+          dataIndex: 'orgName'
         },
         {
           title: '更新时间',
-          dataIndex: 'updatedAt',
-          sorter: true
+          dataIndex: 'updated',
+          sorter: true,
+          customRender: (text) => moment(text * 1000).format('YYYY-MM-DD')
         },
         {
           title: '操作',
@@ -126,9 +123,9 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return getServiceList(Object.assign(parameter, this.queryParam))
+        return queryRoleList(this.queryParam, parameter.pageNo, parameter.pageSize)
           .then(res => {
-            return res.result
+            return res.data
           })
       },
       selectedRowKeys: [],
@@ -150,12 +147,15 @@ export default {
       return statusMap[type].text
     },
     statusTypeFilter (type) {
-      return statusMap[type].status
+      return statusMap[type].roleStatus
     }
   },
   created () {
     this.tableOption()
-    getRoleList({ t: new Date() })
+    getOrgAll().then(res => {
+      this.orgList = res.data
+    })
+    // getRoleList({ t: new Date() })
   },
   methods: {
     tableOption () {
@@ -195,13 +195,15 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    // toggleAdvanced () {
-    //   this.advanced = !this.advanced
-    // },
+    handleChange (value) {
+      this.queryParam.orgId = value
+      // fetch(value, data => (this.data = data));
+    },
     resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
+      this.queryParam = {}
+    },
+    removeUser(userId){
+
     }
   }
 }

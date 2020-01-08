@@ -245,8 +245,8 @@ const radar = () => {
   ])
 }
 
-Mock.mock(/\/service/, 'get', serverList)
-Mock.mock(/\/list\/search\/projects/, 'get', projects)
-Mock.mock(/\/workplace\/activity/, 'get', activity)
-Mock.mock(/\/workplace\/teams/, 'get', teams)
-Mock.mock(/\/workplace\/radar/, 'get', radar)
+// Mock.mock(/\/service/, 'get', serverList)
+// Mock.mock(/\/list\/search\/projects/, 'get', projects)
+// Mock.mock(/\/workplace\/activity/, 'get', activity)
+// Mock.mock(/\/workplace\/teams/, 'get', teams)
+// Mock.mock(/\/workplace\/radar/, 'get', radar)

@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新建组织"
+    title="新建部门"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -10,11 +10,11 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
         <a-form-item
-          label="组织名称"
+          label="部门名称"
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
         >
-          <a-input v-decorator="['orgName', {rules: [{required: true, max: 20, message: '组织名称不能超过20个字！'}]}]" />
+          <a-input v-decorator="['orgName', {rules: [{required: true, max: 20, message: '部门名称不能超过20个字！'}]}]" />
         </a-form-item>
       </a-form>
     </a-spin>

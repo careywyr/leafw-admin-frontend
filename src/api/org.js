@@ -2,6 +2,7 @@ import { axios } from '@/utils/request'
 
 const api = {
   list: '/org/list',
+  all: '/org/list/all',
   org: '/org'
 }
 
@@ -12,6 +13,13 @@ export function getOrgList (parameter, pageNum, pageSize) {
     url: api.list + '/' + pageSize + '/' + pageNum,
     method: 'get',
     params: parameter
+  })
+}
+
+export function getOrgAll () {
+  return axios({
+    url: api.all,
+    method: 'get'
   })
 }
 
