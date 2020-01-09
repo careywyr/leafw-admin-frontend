@@ -9,7 +9,7 @@
             </a-form-item>
           </a-col>
           <a-col  :sm="24" :md="3">
-            <span class="table-page-search-submitButtons" :style=" { float: 'right', overflow: 'hidden' }  ">
+            <span class="table-page-segetOrgListarch-submitButtons" :style=" { float: 'right', overflow: 'hidden' }  ">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
             </span>
@@ -110,7 +110,7 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log('loadData.parameter', parameter)
+        console.log('queryParam', this.queryParam)
         return getOrgList(this.queryParam, parameter.pageNo, parameter.pageSize)
           .then(res => {
             return res.data

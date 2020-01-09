@@ -53,7 +53,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="$refs.createModal.add(orgList, roleList)">新建</a-button>
     </div>
 
     <s-table
@@ -67,28 +67,28 @@
       </span>
       <span slot="userStatus" slot-scope="text, record">
         <template>
-              <a-switch checkedChildren="激活" unCheckedChildren="禁用"  @change="statusSwitch"/>
+              <a-switch checkedChildren="激活" unCheckedChildren="禁用" :checked="record.userStatus === 1" @change="statusSwitch(record)"/>
         </template>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">修改</a>
           <a-divider type="vertical" />
-          <a-popconfirm title="是否要删除此账号？" @confirm="remove(record.orgId)">
+          <a-popconfirm title="是否要删除此账号？" @confirm="remove(record.userId)">
                 <a>删除</a>
            </a-popconfirm>
         </template>
       </span>
     </s-table>
-<!--    <create-form ref="createModal" @ok="handleOk" />-->
+    <create-form ref="createModal" @ok="handleOk" />
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-// import CreateForm from './CreateForm'
-import { queryUserList } from '@/api/user'
+import CreateForm from './CreateForm'
+import { queryUserList, saveUser, changeUserStatus, delUser } from '@/api/user'
 import { getOrgAll } from '@/api/org'
 import { getRoleAll } from '@/api/role'
 
@@ -114,7 +114,8 @@ const statusMap = {
 export default {
   name: 'TableList',
   components: {
-    STable
+    STable,
+    CreateForm
   },
   data () {
     return {
@@ -156,7 +157,7 @@ export default {
           title: '更新时间',
           dataIndex: 'updated',
           sorter: true,
-          customRender: (text) => moment(text * 1000).format('YYYY-MM-DD')
+          customRender: (text) => text ? moment(text * 1000).format('YYYY-MM-DD') : '˚∆˚'
         },
         {
           title: '操作',
@@ -229,16 +230,18 @@ export default {
       console.log(record)
       this.$refs.modal.edit(record)
     },
-    remove (orgId) {
-      // deleteOrg(orgId).then(res => {
-      //   if (res.success) {
-      //     this.$message.success(`删除成功`)
-      //     this.$refs.table.refresh(true)
-      //   }
-      // })
+    remove (userId) {
+      delUser({ 'userId': userId }).then(res => {
+        if (res.success) {
+          this.$message.success(`删除成功`)
+          this.$refs.table.refresh(true)
+        }
+      })
     },
-    handleOk () {
-      this.$refs.table.refresh()
+    handleOk (value) {
+      saveUser(value).then(res => {
+        this.$refs.table.refresh()
+      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
@@ -253,8 +256,12 @@ export default {
     resetSearchForm () {
       this.queryParam = {}
     },
-    statusSwitch(value){
-      alert(value)
+    statusSwitch (value) {
+      changeUserStatus({ 'userId': value.userId }).then(res => {
+        if (res.success) {
+          this.$refs.table.refresh()
+        }
+      })
     }
   }
 }

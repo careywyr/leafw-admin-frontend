@@ -64,8 +64,8 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import CreateForm from '../../list/modules/CreateForm'
-import { queryRoleList, deleteRole, saveRole, updateRole } from '@/api/role'
+import CreateForm from './CreateForm'
+import { queryRoleList, deleteRole, saveRole, updateRole, getPermissionAll } from '@/api/role'
 import { getOrgAll } from '@/api/org'
 
 const statusMap = {
@@ -155,6 +155,7 @@ export default {
     getOrgAll().then(res => {
       this.orgList = res.data
     })
+    this.queryAllPermission()
     // getRoleList({ t: new Date() })
   },
   methods: {
@@ -204,6 +205,11 @@ export default {
     },
     removeUser(userId){
 
+    },
+    queryAllPermission(){
+      getPermissionAll().then(res => {
+        console.log(res.data)
+      })
     }
   }
 }

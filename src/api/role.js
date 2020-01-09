@@ -3,7 +3,8 @@ import { axios } from '@/utils/request'
 const api = {
   list: '/role/list',
   all: '/role/list/all',
-  role: '/role'
+  role: '/role',
+  allPermission: '/permission/all'
 }
 
 export default api
@@ -42,6 +43,13 @@ export function updateRole (parameter) {
 export function getRoleAll (parameter) {
   return axios({
     url: api.all,
+    method: 'get'
+  })
+}
+
+export function getPermissionAll (parameter) {
+  return axios({
+    url: api.allPermission,
     method: 'get'
   })
 }

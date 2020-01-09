@@ -327,7 +327,7 @@ export const asyncRouterMap = [
             path: '/permission/account',
             name: 'accountSetting',
             component: () => import('@/views/permission/account/list'),
-            meta: { title: '账号管理', keepAlive: true, permission: [ 'permission' ] }
+            meta: { title: '账号管理', keepAlive: true, permission: [ 'account' ] }
           },
           {
             path: '/permission/org',
